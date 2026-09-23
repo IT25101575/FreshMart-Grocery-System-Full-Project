@@ -1,0 +1,27 @@
+# Compiled Java Bytecode
+*.class
+backend/bin/
+out/
+bin/
+
+# IDE Configuration & Project Files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+
+# Build and OS Artifacts
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+*.tmp
+*.bak
+sources.txt
+
+# Docker Volume (if local)
+freshmart_sql_data/

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Inquiries — FreshMart</title>
+  <meta name="description" content="Submit and manage your support inquiries and questions at FreshMart grocery delivery.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Inquiry Page Specific Styles ── */
+    .inquiries-hero {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      padding: 48px 0 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .inquiries-hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .inquiries-hero-content { position: relative; z-index: 1; }
+    .inquiries-hero h1 { color: #fff; margin-bottom: 8px; }
+    .inquiries-hero p { color: rgba(255,255,255,0.7); }
+
+    /* Stats Row */
+    .inq-stats-row {
+      display: flex;
+      gap: 16px;
+      margin: 32px 0 24px;
+      flex-wrap: wrap;
+    }
+    .inq-stat-card {
+      flex: 1;
+      min-width: 120px;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .inq-stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--clr-primary);
+      line-height: 1;
+    }
+    .inq-stat-label {
+      font-size: 0.78rem;
+      color: var(--clr-text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Inquiry Cards */
+    .inquiry-card {
+      border-radius: var(--radius-lg);
+      padding: 0;
+      margin-bottom: 16px;
+      overflow: hidden;
+      border: 1px solid var(--clr-border);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .inquiry-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .inquiry-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px 12px;
+      background: var(--clr-surface);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .inquiry-card-title { display: flex; align-items: flex-start; gap: 12px; }
+    .inquiry-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--clr-primary-muted) 0%, rgba(16,185,129,0.05) 100%);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .inquiry-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .inquiry-card-body { padding: 16px 20px 18px; background: var(--clr-bg); }
+
+    /* Status Badges */
+    .inquiry-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .inquiry-badge--pending   { background: rgba(245,158,11,0.12); color: #d97706; }
+    .inquiry-badge--forwarded { background: rgba(59,130,246,0.12);  color: #2563eb; }
+    .inquiry-badge--answered  { background: rgba(16,185,129,0.12);  color: #059669; }
+    .inquiry-badge--closed    { background: rgba(100,116,139,0.12); color: #64748b; }
+
+    /* Department Badge */
+    .inquiry-dept-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+
+    /* Answer Card */
+    .inquiry-answer-card {
+      background: linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(5,150,105,0.08) 100%);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+    .inquiry-admin-response {
+      background: rgba(245,158,11,0.05);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-top: 10px;
+    }
+
+    /* Empty state */
+    .inquiries-empty {
+      text-align: center;
+      padding: 64px 24px;
+    }
+    .inquiries-empty-icon { font-size: 4rem; margin-bottom: 16px; }
+
+    /* Edit buttons */
+    .inq-btn-edit, .inq-btn-delete { padding: 6px 8px; }
+    .inq-btn-delete { color: var(--clr-danger) !important; }
+
+    /* Status flow timeline */
+    .inquiry-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+      padding: 16px 20px;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+    }
+    .flow-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      min-width: 80px;
+    }
+    .flow-step::after {
+      content: '→';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--clr-text-muted);
+      font-size: 0.9rem;
+    }
+    .flow-step:last-child::after { display: none; }
+    .flow-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--clr-surface-sunken);
+      border: 2px solid var(--clr-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 6px;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .flow-step.active .flow-dot {
+      background: var(--clr-primary);
+      border-color: var(--clr-primary);
+      color: #fff;
+    }
+    .flow-label { font-size: 0.7rem; color: var(--clr-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body class="page-browse">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="navbar-logo">&#127807;</div>
+        <div class="navbar-brand-text">Fresh<span>Cart</span></div>
+      </a>
+      <div class="navbar-nav">
+        <a href="index.html" class="nav-link">&#127968; Browse</a>
+        <a href="cart.html" class="nav-link" id="nav-cart">
+          &#128722; Cart
+          <span class="badge hidden" id="cart-badge">0</span>
+        </a>
+        <a href="orders.html" class="nav-link">&#128230; Orders</a>
+        <a href="inquiries.html" class="nav-link active">&#128172; Inquiries</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">&#9881; Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-sm" id="btn-login" onclick="showModal('login-modal')">Sign In</button>
+        <button class="btn btn-primary btn-sm" id="btn-signup" onclick="showModal('signup-modal')">Sign Up</button>
+        <div class="hidden" id="user-menu">
+          <button class="btn btn-ghost btn-sm" id="user-name-display"></button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+        </div>
+        <button class="navbar-mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Banner -->
+  <div class="inquiries-hero">
+    <div class="container inquiries-hero-content">
+      <h1 class="heading-lg">My Inquiries</h1>
+      <p class="body-sm">Submit questions, track responses, and get help from our support team</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container" style="padding-top: 32px; padding-bottom: 64px;">
+
+    <!-- Stats Row -->
+    <div class="inq-stats-row">
+      <div class="inq-stat-card">
+        <div class="inq-stat-number" id="inq-stat-total">0</div>
+        <div class="inq-stat-label">Total Inquiries</div>
+      </div>
+      <div class="inq-stat-card">
+        <div class="inq-stat-number" id="inq-stat-pending" style="color:#d97706;">0</div>
+        <div class="inq-stat-label">Pending</div>
+      </div>
+      <div class="inq-stat-card">
+        <div class="inq-stat-number" id="inq-stat-answered" style="color:#059669;">0</div>
+        <div class="inq-stat-label">Answered</div>
+      </div>
+    </div>
+
+    <!-- Status Flow Guide -->
+    <div class="inquiry-flow">
+      <div class="flow-step active">
+        <div class="flow-dot">📝</div>
+        <div class="flow-label">Submitted</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">👁️</div>
+        <div class="flow-label">Admin Reviews</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">📤</div>
+        <div class="flow-label">Forwarded</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">✅</div>
+        <div class="flow-label">Answered</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">🔒</div>
+        <div class="flow-label">Closed</div>
+      </div>
+    </div>
+
+    <!-- Header + Add Button -->
+    <div class="admin-header" style="margin-bottom: 20px;">
+      <div>
+        <h2 class="heading-md">Your Support Inquiries</h2>
+        <p class="body-sm">You can edit or delete your own inquiries while they are pending</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddInquiryModal()" id="btn-add-inquiry">
+        + New Inquiry
+      </button>
+    </div>
+
+    <!-- Inquiries List -->
+    <div id="my-inquiries-list"></div>
+
+    <!-- Empty State -->
+    <div class="inquiries-empty hidden" id="inquiries-empty">
+      <div class="inquiries-empty-icon">💬</div>
+      <h3 class="heading-md" style="margin-bottom: 8px;">No inquiries yet</h3>
+      <p class="body-sm text-muted" style="margin-bottom: 24px;">Have a question? Submit your first inquiry and our team will respond shortly.</p>
+      <button class="btn btn-primary" onclick="openAddInquiryModal()">Submit an Inquiry</button>
+    </div>
+  </div>
+
+  <!-- ── Add/Edit Inquiry Modal ── -->
+  <div class="modal-backdrop" id="inquiry-modal-backdrop" onclick="hideInquiryModal()"></div>
+  <div class="modal" id="inquiry-modal" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="inquiry-modal-title">Submit New Inquiry</h3>
+      <button class="modal-close" onclick="hideInquiryModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="inquiry-form" onsubmit="return saveInquiryForm(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Your Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="inq-name" placeholder="John Silva" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Phone <span class="required">*</span></label>
+            <input type="tel" class="form-input" id="inq-phone" placeholder="+94 7X XXX XXXX" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 2;">
+            <label class="form-label">Delivery Address <span class="required">*</span></label>
+            <input type="text" class="form-input" id="inq-address" placeholder="42 Galle Road, Colombo" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label class="form-label">Order ID <span class="text-muted" style="font-size:0.75rem;">(Optional)</span></label>
+            <input type="text" class="form-input" id="inq-order-id" placeholder="ORD-00001">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject <span class="required">*</span></label>
+          <input type="text" class="form-input" id="inq-subject" placeholder="e.g. Delivery issue with my order" required maxlength="120">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Explanation / Message <span class="required">*</span></label>
+          <textarea class="form-textarea" id="inq-message" rows="4" placeholder="Please describe your issue or question in detail. Include order numbers or product names if relevant." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="font-size:0.78rem; color:var(--clr-text-muted);">Your inquiry will be reviewed by our System Administrator and forwarded to the relevant department.</label>
+        </div>
+        <div class="modal-footer" style="padding: 16px 0 0; border:none;">
+          <button type="button" class="btn btn-ghost" onclick="hideInquiryModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Inquiry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top:none;">
+        <span>&copy; 2026 FreshMart. All rights reserved.</span>
+        <span>Made with &#128154; for fresh living</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal-backdrop" id="login-modal-backdrop" onclick="hideModal('login-modal')"></div>
+  <div class="modal" id="login-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Welcome Back</h3>
+      <button class="modal-close" onclick="hideModal('login-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="login-form" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal-backdrop" id="signup-modal-backdrop" onclick="hideModal('signup-modal')"></div>
+  <div class="modal" id="signup-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Account</h3>
+      <button class="modal-close" onclick="hideModal('signup-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="signup-form" onsubmit="handleSignup(event); return false;">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="signup-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="signup-phone" placeholder="+94 7X XXX XXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea class="form-textarea" id="signup-address" rows="2" placeholder="Your delivery address"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/validator.js?v=2026_v2"></script>
+  <script src="js/api.js?v=2026_v2"></script>
+  <script src="js/product-browse.js?v=2026_v2"></script>
+  <script src="js/account.js?v=2026_v2"></script>
+  <script src="js/cart.js?v=2026_v2"></script>
+  <script src="js/inquiry.js?v=2026_v2"></script>
+</body>
+</html>

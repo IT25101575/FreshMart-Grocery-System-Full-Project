@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — FreshMart</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-checkout">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="navbar-logo">&#127807;</div>
+        <div class="navbar-brand-text">Fresh<span>Cart</span></div>
+      </a>
+      <div class="navbar-nav">
+        <a href="index.html" class="nav-link">&#127968; Browse</a>
+        <a href="cart.html" class="nav-link" id="nav-cart">
+          &#128722; Cart
+          <span class="badge hidden" id="cart-badge">0</span>
+        </a>
+        <a href="orders.html" class="nav-link">&#128230; Orders</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">&#9881; Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-sm" id="btn-login" onclick="showModal('login-modal')">Sign In</button>
+        <button class="btn btn-primary btn-sm" id="btn-signup" onclick="showModal('signup-modal')">Sign Up</button>
+        <div class="hidden" id="user-menu">
+          <button class="btn btn-ghost btn-sm" id="user-name-display"></button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+        </div>
+        <button class="navbar-mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-hero-banner" style="background-image: url('images/banner-grocery.jpg');">
+    <div class="page-hero-overlay"></div>
+    <div class="container page-hero-content">
+      <div class="flex items-center gap-md" style="position: relative; z-index: 1;">
+        <a href="cart.html" class="btn btn-ghost btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.3);">&#8592; Back to Cart</a>
+      </div>
+      <h1 class="heading-lg" style="margin-top: 16px; color: #fff; position: relative; z-index: 1;">Checkout</h1>
+      <p class="body-sm" style="margin-top: 4px; color: rgba(255,255,255,0.8); position: relative; z-index: 1;">Complete your order in just a few steps</p>
+    </div>
+  </section>
+
+  <!-- Checkout Content -->
+  <section class="section" style="padding-top: 20px;">
+    <div class="container">
+      <div class="checkout-layout">
+
+        <!-- Left: Steps -->
+        <div class="flex flex-col gap-md">
+
+          <!-- Step 1: Shipping -->
+          <div class="checkout-step">
+            <div class="checkout-step-header">
+              <div class="step-number" id="step1-number">1</div>
+              <div>
+                <h3 class="body-md" style="font-weight: 600;">Delivery Address</h3>
+                <p class="body-xs">Where should we deliver your order?</p>
+              </div>
+            </div>
+            <div class="checkout-step-body">
+              <form id="shipping-form">
+                <div class="form-group">
+                  <label class="form-label">Full Name <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="ship-name" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Street Address <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="ship-address" placeholder="123 Main Road" required>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">City / District <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="ship-city" placeholder="Colombo" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Postal Code <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="ship-zip" placeholder="00100" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number <span class="required">*</span></label>
+                  <input type="tel" class="form-input" id="ship-phone" placeholder="+94 7X XXX XXXX" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Delivery Instructions</label>
+                  <textarea class="form-textarea" id="ship-notes" rows="2" placeholder="Gate code, floor, landmark..."></textarea>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Step 2: Delivery Schedule -->
+          <div class="checkout-step">
+            <div class="checkout-step-header">
+              <div class="step-number" id="step2-number">2</div>
+              <div>
+                <h3 class="body-md" style="font-weight: 600;">Delivery Time</h3>
+                <p class="body-xs">Choose your preferred delivery window</p>
+              </div>
+            </div>
+            <div class="checkout-step-body">
+              <div class="grid grid-3" style="gap: 12px;">
+                <div class="payment-option selected" onclick="selectDeliveryTime(this, 'express')">
+                  <input type="radio" name="delivery-time" checked>
+                  <div>
+                    <div class="payment-option-title">&#9889; Express</div>
+                    <div class="payment-option-desc" id="checkout-desc-express">30 minutes — Rs 4.99</div>
+                  </div>
+                </div>
+                <div class="payment-option" onclick="selectDeliveryTime(this, 'standard')">
+                  <input type="radio" name="delivery-time">
+                  <div>
+                    <div class="payment-option-title">&#128666; Standard</div>
+                    <div class="payment-option-desc" id="checkout-desc-standard">2 hours — Rs 2.99</div>
+                  </div>
+                </div>
+                <div class="payment-option" onclick="selectDeliveryTime(this, 'scheduled')">
+                  <input type="radio" name="delivery-time">
+                  <div>
+                    <div class="payment-option-title">&#128197; Scheduled</div>
+                    <div class="payment-option-desc" id="checkout-desc-scheduled">Pick a time — Free</div>
+                  </div>
+                </div>
+              </div>
+              <div class="body-xs text-muted" id="checkout-delivery-policy-notice" style="margin-top: 10px; display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--clr-surface-sunken); border-radius: var(--radius-sm);">
+                <span>&#128666;</span>
+                <span id="checkout-delivery-policy-text">Fixed delivery charge for all locations. Note: Standard flat rate</span>
+              </div>
+              <div class="form-group hidden" style="margin-top: 16px;" id="schedule-picker">
+                <label class="form-label">Select Date & Time</label>
+                <div class="form-row">
+                  <input type="date" class="form-input" id="schedule-date">
+                  <select class="form-select" id="schedule-time">
+                    <option value="">Select time slot</option>
+                    <option value="09:00-11:00">9:00 AM - 11:00 AM</option>
+                    <option value="11:00-13:00">11:00 AM - 1:00 PM</option>
+                    <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
+                    <option value="17:00-19:00">5:00 PM - 7:00 PM</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Payment -->
+          <div class="checkout-step">
+            <div class="checkout-step-header">
+              <div class="step-number" id="step3-number">3</div>
+              <div>
+                <h3 class="body-md" style="font-weight: 600;">Payment Method</h3>
+                <p class="body-xs">How would you like to pay?</p>
+              </div>
+            </div>
+            <div class="checkout-step-body">
+              <div class="payment-option selected" onclick="selectPayment(this, 'card')">
+                <input type="radio" name="payment" checked>
+                <span class="payment-option-icon">&#128179;</span>
+                <div class="payment-option-details">
+                  <div class="payment-option-title">Credit / Debit Card</div>
+                  <div class="payment-option-desc">Visa, Mastercard, AMEX</div>
+                </div>
+              </div>
+              <div class="payment-option" onclick="selectPayment(this, 'cod')">
+                <input type="radio" name="payment">
+                <span class="payment-option-icon">&#128176;</span>
+                <div class="payment-option-details">
+                  <div class="payment-option-title">Cash on Delivery</div>
+                  <div class="payment-option-desc">Pay when you receive your order</div>
+                </div>
+              </div>
+
+
+              <!-- Card Details -->
+              <div id="card-details" style="margin-top: 20px;">
+                <div class="form-group">
+                  <label class="form-label">Card Number</label>
+                  <input type="text" class="form-input" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="text" class="form-input" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">CVV</label>
+                    <input type="text" class="form-input" id="card-cvv" placeholder="123" maxlength="4">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Cardholder Name</label>
+                  <input type="text" class="form-input" id="card-name" placeholder="John Doe">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Order Summary -->
+        <div class="cart-summary">
+          <div class="cart-summary-card">
+            <h3 class="cart-summary-title">Order Summary</h3>
+
+            <div class="flex flex-col gap-sm" id="checkout-items" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+              <!-- Items rendered here -->
+            </div>
+
+            <div style="border-top: 1px solid var(--clr-border-light); padding-top: 16px;">
+              <div class="summary-row">
+                <span class="label">Subtotal</span>
+                <span class="value" id="checkout-subtotal">Rs 0.00</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">Delivery</span>
+                <span class="value" id="checkout-delivery">Rs 4.99</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">Tax (8%)</span>
+                <span class="value" id="checkout-tax">Rs 0.00</span>
+              </div>
+              <div class="summary-total">
+                <span>Total</span>
+                <span class="value" id="checkout-total">Rs 0.00</span>
+              </div>
+            </div>
+
+            <button class="btn btn-accent btn-lg" style="width: 100%; margin-top: 24px;" onclick="placeOrder()">
+              Place Order &#10003;
+            </button>
+
+            <p class="body-xs text-center" style="margin-top: 12px;">By placing your order, you agree to our Terms of Service</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none;">
+        <span>&copy; 2026 FreshMart. All rights reserved.</span>
+        <span>Made with &#128154; for fresh living</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Payment Slip & Receipt Modal -->
+  <div class="modal-backdrop" id="payment-slip-backdrop"></div>
+  <div class="modal payment-slip-modal" id="payment-slip-modal" style="max-width: 660px; padding: 0; overflow: hidden; border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);">
+    
+    <!-- Slip Header Ribbon -->
+    <div style="background: linear-gradient(135deg, var(--clr-primary-dark) 0%, var(--clr-primary) 100%); color: #ffffff; padding: 20px 28px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="font-size: 2rem;">&#127807;</div>
+        <div>
+          <div style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; line-height: 1.1;">FreshMart Supermarket</div>
+          <div style="font-size: 0.75rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.06em;">Official Payment Receipt &amp; Tax Invoice</div>
+        </div>
+      </div>
+      <div class="receipt-paid-badge" style="background: #22c55e; color: #ffffff; padding: 5px 12px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 4px;">
+        &#10003; PAID
+      </div>
+    </div>
+
+    <!-- Printable Slip Content -->
+    <div id="printable-slip-area" style="background: #ffffff; padding: 28px 32px; color: #1f2937;">
+      
+      <!-- Top Order ID Banner -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px dashed #e5e7eb; padding-bottom: 18px; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; display: block; font-weight: 600;">Order ID</span>
+          <span class="font-mono" style="font-size: 1.5rem; font-weight: 800; color: var(--clr-primary);" id="slip-order-id">#ORD-00001</span>
+          <div style="font-size: 0.78rem; color: #6b7280; margin-top: 2px;">Payment Ref: <strong class="font-mono" id="slip-payment-id">PAY-00001</strong></div>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; display: block; font-weight: 600;">Date &amp; Time</span>
+          <div style="font-size: 0.88rem; font-weight: 600; color: #1f2937;" id="slip-date-time">17 Sep 2026, 03:45 PM</div>
+          <div style="font-size: 0.78rem; color: #6b7280; margin-top: 2px;">Method: <strong id="slip-payment-method">Credit Card</strong></div>
+        </div>
+      </div>
+
+      <!-- Customer & Delivery Information -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 4px;">Delivered To</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #111827;" id="slip-customer-name">Customer Name</div>
+          <div style="font-size: 0.8rem; color: #4b5563; margin-top: 2px;">&#128222; <span id="slip-customer-phone">+94 77 123 4567</span></div>
+        </div>
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 4px;">Shipping Address &amp; Speed</div>
+          <div style="font-size: 0.82rem; color: #111827; font-weight: 500;" id="slip-customer-address">42 Galle Road, Colombo</div>
+          <div style="font-size: 0.78rem; color: var(--clr-primary); font-weight: 600; margin-top: 3px;">&#128666; <span id="slip-delivery-slot">Express Delivery (30 mins)</span></div>
+        </div>
+      </div>
+
+      <!-- Purchased Items Table -->
+      <div style="margin-bottom: 20px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+          <thead>
+            <tr style="border-bottom: 1.5px solid #e5e7eb; color: #6b7280; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+              <th style="padding: 8px 4px;">Item Description</th>
+              <th style="padding: 8px 4px; text-align: center;">Qty</th>
+              <th style="padding: 8px 4px; text-align: right;">Unit Price</th>
+              <th style="padding: 8px 4px; text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody id="slip-items-tbody">
+            <!-- Items injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Financial Calculation Section -->
+      <div style="border-top: 2px dashed #e5e7eb; padding-top: 14px; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: flex-end;">
+          <div style="width: 260px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; margin-bottom: 4px;">
+              <span>Subtotal:</span>
+              <span class="font-mono" id="slip-subtotal">Rs 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; margin-bottom: 4px;">
+              <span>Delivery Charge:</span>
+              <span class="font-mono" id="slip-delivery-fee">Rs 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; margin-bottom: 8px;">
+              <span>Tax (8%):</span>
+              <span class="font-mono" id="slip-tax">Rs 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; color: #111827; border-top: 1.5px solid #111827; padding-top: 8px;">
+              <span>Total Paid:</span>
+              <span class="font-mono" style="color: var(--clr-primary);" id="slip-grand-total">Rs 0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barcode Graphic & Verification Note -->
+      <div style="text-align: center; border-top: 1px solid #f3f4f6; padding-top: 14px;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.5rem; letter-spacing: 5px; font-weight: 900; color: #374151; margin-bottom: 2px;" id="slip-barcode">
+          ||||| ||| |||| ||||| || |||||| |||||
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 700; color: #6b7280; font-family: var(--font-mono); margin-bottom: 4px;" id="slip-barcode-text">ORD-00001</div>
+        <p style="font-size: 0.72rem; color: #9ca3af; margin: 0;">
+          Thank you for ordering with FreshMart! Please retain this slip for delivery verification. &bull; Hotline: +94 11 234 5678
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Action Toolbar (Hidden during print) -->
+    <div class="no-print" style="background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="printPaymentSlip()">
+          &#128438; Print Slip
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="downloadPaymentSlip()">
+          &#128229; Download Receipt
+        </button>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <a href="orders.html" class="btn btn-primary btn-sm">View in My Orders &#8594;</a>
+        <a href="index.html" class="btn btn-ghost btn-sm">Continue Shopping</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Order Success Modal (Kept for fallback) -->
+  <div class="modal-backdrop" id="success-modal-backdrop"></div>
+  <div class="modal" id="success-modal" style="max-width: 440px;">
+    <div class="modal-body" style="text-align: center; padding: 48px 32px;">
+      <div style="font-size: 4rem; margin-bottom: 16px;">&#127881;</div>
+      <h2 class="heading-lg" style="margin-bottom: 8px;">Order Placed!</h2>
+      <p class="body-md text-muted" style="margin-bottom: 8px;">Your order has been confirmed successfully.</p>
+      <p class="body-sm" style="margin-bottom: 28px;">Order ID: <strong class="font-mono" id="success-order-id">#ORD-00000</strong></p>
+      <div class="flex gap-sm" style="justify-content: center;">
+        <a href="orders.html" class="btn btn-primary">View Orders</a>
+        <a href="index.html" class="btn btn-outline">Continue Shopping</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal-backdrop" id="login-modal-backdrop" onclick="hideModal('login-modal')"></div>
+  <div class="modal" id="login-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Welcome Back</h3>
+      <button class="modal-close" onclick="hideModal('login-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="login-form" onsubmit="handleLogin(event); return false;">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+      </form>
+      <div style="margin-top: 16px; padding: 12px; background: var(--clr-primary-muted); border-radius: var(--radius-sm); text-align: center;">
+        <p class="body-xs" style="color: var(--clr-primary); font-weight: 500;">Admin? Login with <strong>admin@freshmart.com</strong> / <strong>admin123</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal-backdrop" id="signup-modal-backdrop" onclick="hideModal('signup-modal')"></div>
+  <div class="modal" id="signup-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Account</h3>
+      <button class="modal-close" onclick="hideModal('signup-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="signup-form" onsubmit="handleSignup(event); return false;">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="signup-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="signup-phone" placeholder="+94 7X XXX XXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea class="form-textarea" id="signup-address" rows="2" placeholder="Your delivery address (e.g. 42 Galle Road, Colombo 03)"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/validator.js?v=2026_v2"></script>
+  <script src="js/api.js?v=2026_v2"></script>
+  <script src="js/product-browse.js?v=2026_v2"></script>
+  <script src="js/account.js?v=2026_v2"></script>
+  <script src="js/cart.js?v=2026_v2"></script>
+  <script src="js/order.js?v=2026_v2"></script>
+  <script src="js/payment-delivery.js?v=2026_v2"></script>
+</body>
+</html>

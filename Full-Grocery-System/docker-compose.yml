@@ -1,0 +1,16 @@
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: freshmart-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=FreshMart@2026!
+    ports:
+      - "1433:1433"
+    volumes:
+      - freshmart_sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  freshmart_sql_data:
+    driver: local

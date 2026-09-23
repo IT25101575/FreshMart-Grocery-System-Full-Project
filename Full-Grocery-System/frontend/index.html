@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshMart — Premium Grocery Delivery</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-browse">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="navbar-logo">&#127807;</div>
+        <div class="navbar-brand-text">Fresh<span>Cart</span></div>
+      </a>
+      <div class="navbar-nav">
+        <a href="index.html" class="nav-link active">&#127968; Browse</a>
+        <a href="cart.html" class="nav-link" id="nav-cart">
+          &#128722; Cart
+          <span class="badge hidden" id="cart-badge">0</span>
+        </a>
+        <a href="orders.html" class="nav-link">&#128230; Orders</a>
+        <a href="#customer-inquiry-section" class="nav-link">&#128172; Inquiries</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">&#9881; Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-sm" id="btn-login" onclick="showModal('login-modal')">Sign In</button>
+        <button class="btn btn-primary btn-sm" id="btn-signup" onclick="showModal('signup-modal')">Sign Up</button>
+        <div class="hidden" id="user-menu">
+          <button class="btn btn-ghost btn-sm" id="user-name-display"></button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+        </div>
+        <button class="navbar-mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text fade-in glass-panel">
+          <div class="hero-eyebrow">&#10024; Fresh & Organic — Delivered Daily</div>
+          <h1 class="hero-title">
+            Premium Groceries,<br>
+            <span class="accent">Delivered Fresh</span><br>
+            to Your Door
+          </h1>
+          <p class="hero-subtitle">
+            Discover handpicked, farm-fresh produce and everyday essentials — sourced locally, delivered with care.
+          </p>
+          <div class="hero-actions">
+            <a href="#products" class="btn btn-primary btn-lg">Shop Now &#8594;</a>
+            <button class="btn btn-ghost btn-lg" style="color: rgba(255,255,255,0.85); border: 1.5px solid rgba(255,255,255,0.3);" onclick="showModal('signup-modal')">Create Account</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-illustration" id="hero-carousel">
+            <div class="hero-carousel-slides" id="hero-carousel-slides">
+              <!-- Slide 1 -->
+              <div class="hero-slide active">
+                <div class="hero-offer-card">
+                  <img src="images/products/avocados.jpg" alt="Organic Avocados" loading="lazy">
+                  <span class="hero-offer-badge">-25% OFF</span>
+                  <div class="hero-offer-info">
+                    <div class="hero-offer-name">Organic Avocados</div>
+                    <div class="hero-offer-prices">
+                      <span class="hero-offer-old">Rs 3.99</span>
+                      <span class="hero-offer-new">Rs 2.99</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm hero-claim-btn" onclick="claimDeal(1)">Claim Deal</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 2 -->
+              <div class="hero-slide">
+                <div class="hero-offer-card">
+                  <img src="images/products/salmon.jpg" alt="Atlantic Salmon" loading="lazy">
+                  <span class="hero-offer-badge">-23% OFF</span>
+                  <div class="hero-offer-info">
+                    <div class="hero-offer-name">Atlantic Salmon</div>
+                    <div class="hero-offer-prices">
+                      <span class="hero-offer-old">Rs 12.99</span>
+                      <span class="hero-offer-new">Rs 9.99</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm hero-claim-btn" onclick="claimDeal(12)">Claim Deal</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 3 -->
+              <div class="hero-slide">
+                <div class="hero-offer-card">
+                  <img src="images/products/croissants.jpg" alt="Croissants" loading="lazy">
+                  <span class="hero-offer-badge">-25% OFF</span>
+                  <div class="hero-offer-info">
+                    <div class="hero-offer-name">Croissants (4-pack)</div>
+                    <div class="hero-offer-prices">
+                      <span class="hero-offer-old">Rs 7.99</span>
+                      <span class="hero-offer-new">Rs 5.99</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm hero-claim-btn" onclick="claimDeal(11)">Claim Deal</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Slide 4 -->
+              <div class="hero-slide">
+                <div class="hero-offer-card">
+                  <img src="images/products/greenjuice.jpg" alt="Green Juice Blend" loading="lazy">
+                  <span class="hero-offer-badge">-29% OFF</span>
+                  <div class="hero-offer-info">
+                    <div class="hero-offer-name">Green Juice Blend</div>
+                    <div class="hero-offer-prices">
+                      <span class="hero-offer-old">Rs 6.99</span>
+                      <span class="hero-offer-new">Rs 4.99</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm hero-claim-btn" onclick="claimDeal(15)">Claim Deal</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hero-carousel-dots" id="hero-carousel-dots">
+              <button class="hero-dot active" onclick="goToHeroSlide(0)"></button>
+              <button class="hero-dot" onclick="goToHeroSlide(1)"></button>
+              <button class="hero-dot" onclick="goToHeroSlide(2)"></button>
+              <button class="hero-dot" onclick="goToHeroSlide(3)"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="container">
+      <div class="stats-bar-inner slide-up">
+        <div class="stat-item stat-bg-1">
+          <div class="stat-item-bg"></div>
+          <div class="stat-icon-wrap">
+            <img src="images/stat-products.jpg" alt="Fresh Products" class="stat-icon" loading="lazy">
+          </div>
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Fresh Products</div>
+        </div>
+        <div class="stat-item stat-bg-2">
+          <div class="stat-item-bg"></div>
+          <div class="stat-icon-wrap">
+            <img src="images/stat-customers.jpg" alt="Happy Customers" class="stat-icon" loading="lazy">
+          </div>
+          <div class="stat-number">12k+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-item stat-bg-3">
+          <div class="stat-item-bg"></div>
+          <div class="stat-icon-wrap">
+            <img src="images/stat-delivery.jpg" alt="Avg Delivery" class="stat-icon" loading="lazy">
+          </div>
+          <div class="stat-number">30min</div>
+          <div class="stat-label">Avg. Delivery</div>
+        </div>
+        <div class="stat-item stat-bg-4">
+          <div class="stat-item-bg"></div>
+          <div class="stat-icon-wrap">
+            <img src="images/stat-satisfaction.jpg" alt="Satisfaction Rate" class="stat-icon" loading="lazy">
+          </div>
+          <div class="stat-number">99%</div>
+          <div class="stat-label">Satisfaction Rate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <section class="search-section">
+    <div class="container">
+      <div class="search-bar" id="products">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="search-input" placeholder="Search for fresh produce, dairy, meats...">
+        <button class="search-btn" onclick="searchProducts()">Search</button>
+      </div>
+      <div class="category-filter" id="category-filter">
+        <button class="category-pill active" onclick="filterCategory('all', this)">All Items</button>
+        <button class="category-pill" onclick="filterCategory('fruits', this)">&#127822; Fruits</button>
+        <button class="category-pill" onclick="filterCategory('vegetables', this)">&#129382; Vegetables</button>
+        <button class="category-pill" onclick="filterCategory('dairy', this)">&#129472; Dairy</button>
+        <button class="category-pill" onclick="filterCategory('bakery', this)">&#127838; Bakery</button>
+        <button class="category-pill" onclick="filterCategory('meat', this)">&#129385; Meat & Seafood</button>
+        <button class="category-pill" onclick="filterCategory('beverages', this)">&#127862; Beverages</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Today's Deals Marquee -->
+  <section class="deals-marquee-section">
+    <div class="container">
+      <div class="deals-marquee-header">
+        <span class="deals-badge">&#128293; TODAY'S DEALS</span>
+        <h2 class="heading-md" style="color: #fff; margin: 0;">Up to <span style="color: var(--clr-accent);">40% OFF</span> — Limited Time!</h2>
+      </div>
+    </div>
+    <div class="deals-marquee-track" id="deals-marquee-track">
+      <div class="deals-marquee-inner" id="deals-marquee-inner">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header glass-panel">
+        <h2 class="section-title">
+          <span class="overline">Our Collection</span>
+          Fresh Picks Today
+        </h2>
+        <div class="flex items-center gap-sm">
+          <span class="body-sm" id="product-count">12 products</span>
+          <select class="form-select" style="width: auto; padding: 8px 32px 8px 12px; font-size: 0.85rem;" onchange="sortProducts(this.value)">
+            <option value="default">Sort by: Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name">Name: A to Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-3" id="products-grid">
+        <!-- Products loaded dynamically -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" style="background: var(--clr-surface-sunken);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 48px;">
+        <span class="heading-sm text-primary">Why FreshMart?</span>
+        <h2 class="heading-lg" style="margin-top: 12px;">The Freshest Experience</h2>
+      </div>
+      <div class="grid grid-3">
+        <div class="card card-elevated" style="text-align: center; padding: 36px 24px;">
+          <div class="feature-img-wrap">
+            <img src="images/feature-delivery.jpg" alt="Lightning Delivery" class="feature-img" loading="lazy">
+          </div>
+          <h3 class="heading-md" style="margin-bottom: 8px;">Lightning Delivery</h3>
+          <p class="body-sm">Get your groceries delivered within 30 minutes. We value your time.</p>
+        </div>
+        <div class="card card-elevated" style="text-align: center; padding: 36px 24px;">
+          <div class="feature-img-wrap">
+            <img src="images/feature-organic.jpg" alt="100% Organic" class="feature-img" loading="lazy">
+          </div>
+          <h3 class="heading-md" style="margin-bottom: 8px;">100% Organic</h3>
+          <p class="body-sm">All our produce is certified organic and sourced from local farms.</p>
+        </div>
+        <div class="card card-elevated" style="text-align: center; padding: 36px 24px;">
+          <div class="feature-img-wrap">
+            <img src="images/feature-prices.jpg" alt="Best Prices" class="feature-img" loading="lazy">
+          </div>
+          <h3 class="heading-md" style="margin-bottom: 8px;">Best Prices</h3>
+          <p class="body-sm">Direct from farms — no middlemen. Premium quality at fair prices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Support & Inquiries Section (Bottom of Website) -->
+  <section class="section customer-inquiry-section" id="customer-inquiry-section" style="background: linear-gradient(180deg, var(--clr-surface-sunken) 0%, var(--clr-surface) 100%); border-top: 1px solid var(--clr-border); padding: 56px 0;">
+    <div class="container">
+      <div style="max-width: 960px; margin: 0 auto;">
+        
+        <!-- Section Header -->
+        <div style="text-align: center; margin-bottom: 32px;">
+          <span class="badge badge-success" style="font-size: 0.82rem; padding: 5px 14px; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px;">
+            &#128172; Help &amp; Support Desk
+          </span>
+          <h2 class="heading-lg" style="margin-bottom: 8px;">Customer Inquiries &amp; Assistance</h2>
+          <p class="body-md text-muted" style="max-width: 620px; margin: 0 auto;">
+            Need help with your grocery order, delivery time, product quality, or have a question? Type your details and inquiry below.
+          </p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card card-elevated" style="padding: 32px 36px; border-radius: var(--radius-xl); border: 1px solid var(--clr-border); background: var(--clr-surface-elevated); box-shadow: var(--shadow-lg);">
+          
+          <!-- Inquiry Form Container -->
+          <div id="cust-inq-form-wrap">
+            <form id="customer-bottom-inquiry-form" onsubmit="return submitCustomerInquiryForm(event)">
+              
+              <!-- Row 1: Name & Phone -->
+              <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="cust-inq-name">Your Name <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="cust-inq-name" placeholder="e.g. John Silva" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="cust-inq-phone">Contact Number <span class="required">*</span></label>
+                  <input type="tel" class="form-input" id="cust-inq-phone" placeholder="e.g. +94 77 123 4567 or 0771234567" required>
+                </div>
+              </div>
+
+              <!-- Row 2: Address & Order ID -->
+              <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0; flex: 2;">
+                  <label class="form-label" for="cust-inq-address">Address <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="cust-inq-address" placeholder="e.g. 42 Galle Road, Colombo 03" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                  <label class="form-label" for="cust-inq-order-id">Order ID <span class="text-muted" style="font-weight: normal; font-size: 0.8rem;">(Optional)</span></label>
+                  <input type="text" class="form-input" id="cust-inq-order-id" placeholder="e.g. #ORD-00001">
+                </div>
+              </div>
+
+              <!-- Row 3: Subject -->
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label class="form-label" for="cust-inq-subject">Subject <span class="required">*</span></label>
+                <input type="text" class="form-input" id="cust-inq-subject" placeholder="e.g. Delivery arrival time inquiry / avocado quality issue" required maxlength="120">
+              </div>
+
+              <!-- Row 4: Explanation / Detailed Message -->
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label" for="cust-inq-message">Explanation About Your Inquiry <span class="required">*</span></label>
+                <textarea class="form-textarea" id="cust-inq-message" rows="4" placeholder="Please type a detailed explanation about your inquiry or issue..." required></textarea>
+              </div>
+
+              <!-- Footer Buttons -->
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                <a href="inquiries.html" class="body-sm text-primary" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                  &#128172; View My Inquiries History &amp; Admin Answers &#8594;
+                </a>
+                <button type="submit" class="btn btn-primary btn-lg" style="min-width: 200px;">
+                  Submit Inquiry &#10148;
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Success State Card (Shown after submit) -->
+          <div id="cust-inq-success-box" class="hidden" style="text-align: center; padding: 24px 16px;">
+            <div style="font-size: 3.5rem; margin-bottom: 12px;">&#127881;</div>
+            <h3 class="heading-md" style="color: var(--clr-primary); margin-bottom: 6px;">Inquiry Submitted Successfully!</h3>
+            <p class="body-sm text-muted" style="margin-bottom: 16px;">
+              Thank you, <strong id="cust-inq-ticket-name">Customer</strong>! Your ticket <strong class="font-mono text-primary" id="cust-inq-ticket-no">#INQ-00000</strong> has been submitted to the <strong>System Administrator</strong> for review and processing.
+            </p>
+            <div style="display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+              <a href="inquiries.html" class="btn btn-primary btn-sm">&#128172; Track My Inquiries</a>
+              <button type="button" class="btn btn-outline btn-sm" onclick="resetBottomInquiryForm()">+ Submit Another Inquiry</button>
+            </div>
+          </div>
+
+        </div>
+        
+        <!-- Info Badges Bar Below Card -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px;">
+          <div style="display: flex; align-items: center; gap: 10px; background: var(--clr-surface-elevated); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--clr-border);">
+            <span style="font-size: 1.4rem;">&#128222;</span>
+            <div>
+              <div class="body-xs text-muted">Customer Hotline</div>
+              <div class="body-sm" style="font-weight: 600;">+94 11 234 5678</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; background: var(--clr-surface-elevated); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--clr-border);">
+            <span style="font-size: 1.4rem;">&#9200;</span>
+            <div>
+              <div class="body-xs text-muted">Response Time</div>
+              <div class="body-sm" style="font-weight: 600;">Within 2 - 4 Hours</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; background: var(--clr-surface-elevated); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--clr-border);">
+            <span style="font-size: 1.4rem;">&#128205;</span>
+            <div>
+              <div class="body-xs text-muted">Location</div>
+              <div class="body-sm" style="font-weight: 600;">42 Galle Face, Colombo 03</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <div class="footer-brand-icon">&#127807;</div>
+            <div class="footer-brand-name">FreshMart</div>
+          </div>
+          <p class="footer-desc">Premium groceries delivered fresh to your doorstep. Sourced locally, delivered with care.</p>
+        </div>
+        <div>
+          <div class="footer-title">Quick Links</div>
+          <div class="footer-links">
+            <a href="index.html">Browse Products</a>
+            <a href="cart.html">Shopping Cart</a>
+            <a href="orders.html">My Orders</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">Categories</div>
+          <div class="footer-links">
+            <a href="#">Fresh Fruits</a>
+            <a href="#">Vegetables</a>
+            <a href="#">Dairy & Eggs</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">Contact Us</div>
+          <div class="footer-links">
+            <a href="#">&#128205; 42 Galle Face, Colombo 03</a>
+            <a href="#">&#128222; +94 11 234 5678</a>
+            <a href="#">&#128231; support@freshmart.com</a>
+          </div>
+          <div class="flex gap-sm" style="margin-top: 16px;">
+            <a href="#" class="btn btn-icon btn-ghost" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);" data-tooltip="Facebook">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="#" class="btn btn-icon btn-ghost" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);" data-tooltip="Instagram">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="#" class="btn btn-icon btn-ghost" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);" data-tooltip="Twitter / X">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 FreshMart. All rights reserved.</span>
+        <span>Made with &#128154; for fresh living</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal-backdrop" id="login-modal-backdrop" onclick="hideModal('login-modal')"></div>
+  <div class="modal" id="login-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Welcome Back</h3>
+      <button class="modal-close" onclick="hideModal('login-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="login-form" onsubmit="handleLogin(event); return false;">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+      </form>
+      <div style="margin-top: 16px; padding: 12px; background: var(--clr-primary-muted); border-radius: var(--radius-sm); text-align: center;">
+        <p class="body-xs" style="color: var(--clr-primary); font-weight: 500;">Admin? Login with <strong>admin@freshmart.com</strong> / <strong>admin123</strong></p>
+      </div>
+      <div class="form-divider">or</div>
+      <p class="body-sm text-center">Don't have an account? <a href="#" class="text-primary" style="font-weight: 600;" onclick="hideModal('login-modal'); showModal('signup-modal');">Create one</a></p>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal-backdrop" id="signup-modal-backdrop" onclick="hideModal('signup-modal')"></div>
+  <div class="modal" id="signup-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Account</h3>
+      <button class="modal-close" onclick="hideModal('signup-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="signup-form" onsubmit="handleSignup(event); return false;">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="signup-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="signup-phone" placeholder="+94 7X XXX XXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea class="form-textarea" id="signup-address" rows="2" placeholder="Your delivery address (e.g. 42 Galle Road, Colombo 03)"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Create Account</button>
+      </form>
+      <div class="form-divider">or</div>
+      <p class="body-sm text-center">Already have an account? <a href="#" class="text-primary" style="font-weight: 600;" onclick="hideModal('signup-modal'); showModal('login-modal');">Sign in</a></p>
+    </div>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div class="modal-backdrop" id="product-detail-backdrop" onclick="hideModal('product-detail')"></div>
+  <div class="modal" id="product-detail" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="detail-name">Product Name</h3>
+      <button class="modal-close" onclick="hideModal('product-detail')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align: center; padding: 12px 0; background: var(--clr-surface-sunken); border-radius: var(--radius-md); margin-bottom: 20px; max-height: 260px; overflow: hidden; display: flex; align-items: center; justify-content: center;" id="detail-emoji">
+        <img id="detail-img" src="images/products/apples.jpg" alt="Product Image" style="max-height: 240px; max-width: 100%; object-fit: contain; border-radius: var(--radius-md);" onerror="this.onerror=null;this.src='images/products/apples.jpg';">
+      </div>
+      <div class="flex justify-between items-center" style="margin-bottom: 16px;">
+        <span class="body-sm" id="detail-category">Category</span>
+        <span class="badge badge-success" id="detail-stock">In Stock</span>
+      </div>
+      <p class="body-md" id="detail-desc" style="margin-bottom: 20px;">Product description goes here.</p>
+      <div class="flex justify-between items-center" style="margin-bottom: 8px;">
+        <div>
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--clr-primary);" id="detail-price">Rs 0.00</span>
+          <span class="body-sm" id="detail-unit">/ unit</span>
+        </div>
+      </div>
+
+      <!-- Custom Measurement (Weight & Volume) Section -->
+      <div id="detail-measure-section" class="measure-picker-box hidden">
+        <div class="measure-header">
+          <span class="measure-title" id="measure-section-title">Specify Quantity</span>
+          <span class="measure-subtitle" id="measure-section-subtitle">Type how much you want (e.g. 100g, 500ml)</span>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="measure-presets" id="measure-presets-container"></div>
+
+        <!-- Custom Input Row -->
+        <div class="measure-input-row">
+          <div class="measure-input-wrap">
+            <label class="body-xs text-muted" style="margin-bottom:4px; display:block;" for="detail-measure-amount">Type amount:</label>
+            <input type="number" class="form-input measure-input-field" id="detail-measure-amount" min="1" step="any" placeholder="100" oninput="onDetailMeasureChange()">
+          </div>
+          <div class="measure-unit-wrap">
+            <label class="body-xs text-muted" style="margin-bottom:4px; display:block;" for="detail-measure-unit">Unit:</label>
+            <select class="form-select measure-unit-dropdown" id="detail-measure-unit" onchange="onDetailMeasureChange()"></select>
+          </div>
+        </div>
+
+        <!-- Live Price Calculation Banner -->
+        <div class="measure-price-preview">
+          <div class="measure-preview-left">
+            <span class="measure-preview-label">Calculated Price:</span>
+            <span class="measure-preview-calc" id="measure-calc-summary">100g @ Rs 3.49/kg</span>
+          </div>
+          <div class="measure-preview-total" id="measure-calc-total">Rs 0.35</div>
+        </div>
+
+        <!-- Stock Limit Alert Box -->
+        <div class="measure-stock-alert hidden" id="measure-stock-alert">
+          <span class="stock-alert-icon">&#9888;</span>
+          <span class="stock-alert-text" id="measure-stock-alert-text"></span>
+        </div>
+
+        <button class="btn btn-primary btn-lg" id="detail-measure-add-btn" style="width: 100%; margin-top: 14px;" onclick="addToCartFromDetail()">
+          Add to Cart &#8594;
+        </button>
+      </div>
+
+      <!-- Standard Count/Pack Quantity Section -->
+      <div id="detail-standard-section" style="margin-top: 12px;">
+        <div class="measure-stock-alert hidden" id="standard-stock-alert" style="margin-bottom: 12px;">
+          <span class="stock-alert-icon">&#9888;</span>
+          <span class="stock-alert-text" id="standard-stock-alert-text"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-sm">
+            <span class="body-sm" style="font-weight: 500;">Quantity:</span>
+            <div class="quantity-control">
+              <button onclick="adjustDetailQty(-1)">-</button>
+              <span class="qty-value" id="detail-qty">1</span>
+              <button onclick="adjustDetailQty(1)">+</button>
+            </div>
+          </div>
+          <div class="flex items-center gap-md">
+            <div class="text-right">
+              <span class="body-xs text-muted" style="display:block;">Total:</span>
+              <span class="font-mono" style="font-weight:700; color:var(--clr-primary); font-size:1.15rem;" id="standard-calc-total">Rs 0.00</span>
+            </div>
+            <button class="btn btn-primary" id="detail-standard-add-btn" onclick="addToCartFromDetail()">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="review-section">
+        <div class="form-divider"></div>
+        <h4 class="body-sm" style="margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">Customer Reviews</h4>
+        <div id="product-reviews-summary"></div>
+        <div id="review-form-section"></div>
+        <div class="review-list" id="product-reviews-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/validator.js?v=2026_v2"></script>
+  <script src="js/api.js?v=2026_v2"></script>
+  <script src="js/product-browse.js?v=2026_v2"></script>
+  <script src="js/account.js?v=2026_v2"></script>
+  <script src="js/cart.js?v=2026_v2"></script>
+  <script src="js/review.js?v=2026_v2"></script>
+  <script src="js/inquiry.js?v=2026_v2"></script>
+  <script>
+    // Auto-prefill customer inquiry fields if user is signed in
+    function autofillInquiryFields() {
+      if (typeof AccountManager !== 'undefined') {
+        const s = AccountManager.getSession();
+        if (s) {
+          const nameEl = document.getElementById('cust-inq-name');
+          const phoneEl = document.getElementById('cust-inq-phone');
+          const addrEl = document.getElementById('cust-inq-address');
+          if (nameEl && !nameEl.value) nameEl.value = s.name || '';
+          if (phoneEl && !phoneEl.value && s.phone) phoneEl.value = s.phone;
+          if (addrEl && !addrEl.value && s.address) addrEl.value = s.address;
+        }
+      }
+    }
+    document.addEventListener('DOMContentLoaded', autofillInquiryFields);
+    window.addEventListener('sessionChanged', autofillInquiryFields);
+  </script>
+</body>
+</html>

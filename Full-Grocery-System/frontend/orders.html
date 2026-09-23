@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — FreshMart</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-orders">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="navbar-logo">&#127807;</div>
+        <div class="navbar-brand-text">Fresh<span>Cart</span></div>
+      </a>
+      <div class="navbar-nav">
+        <a href="index.html" class="nav-link">&#127968; Browse</a>
+        <a href="cart.html" class="nav-link" id="nav-cart">
+          &#128722; Cart
+          <span class="badge hidden" id="cart-badge">0</span>
+        </a>
+        <a href="orders.html" class="nav-link active">&#128230; Orders</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">&#9881; Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-sm" id="btn-login" onclick="showModal('login-modal')">Sign In</button>
+        <button class="btn btn-primary btn-sm" id="btn-signup" onclick="showModal('signup-modal')">Sign Up</button>
+        <div class="hidden" id="user-menu">
+          <button class="btn btn-ghost btn-sm" id="user-name-display"></button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+        </div>
+        <button class="navbar-mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-hero-banner" style="background-image: url('images/banner-grocery.jpg');">
+    <div class="page-hero-overlay"></div>
+    <div class="container page-hero-content">
+      <h1 class="heading-lg" style="color: #fff; position: relative; z-index: 1;">My Orders</h1>
+      <p class="body-sm" style="margin-top: 4px; color: rgba(255,255,255,0.8); position: relative; z-index: 1;">Track and manage all your orders in one place</p>
+      <div style="margin-top: 14px; position: relative; z-index: 1; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-primary btn-sm" onclick="scrollToOrders()">&#128203; View All Orders</button>
+        <button class="btn btn-outline btn-sm" style="border-color: rgba(255,255,255,0.5); color: #fff;" onclick="viewPastOrders()">&#128197; Past Orders</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <section style="padding-top: 20px;">
+    <div class="container">
+      <!-- Order History Stats -->
+      <div class="order-history-stats" id="order-history-stats">
+        <div class="oh-stat">
+          <div class="oh-stat-value" id="oh-total-orders">0</div>
+          <div class="oh-stat-label">Total Orders</div>
+        </div>
+        <div class="oh-stat">
+          <div class="oh-stat-value" id="oh-total-spent">Rs 0</div>
+          <div class="oh-stat-label">Total Spent</div>
+        </div>
+        <div class="oh-stat">
+          <div class="oh-stat-value" id="oh-delivered">0</div>
+          <div class="oh-stat-label">Delivered</div>
+        </div>
+        <div class="oh-stat">
+          <div class="oh-stat-value" id="oh-items-ordered">0</div>
+          <div class="oh-stat-label">Items Ordered</div>
+        </div>
+      </div>
+
+      <!-- Reorder Section -->
+      <div class="reorder-section hidden" id="reorder-section">
+        <h3 class="body-sm" style="font-weight: 600; margin-bottom: 12px;">&#128257; Order Again</h3>
+        <div class="reorder-scroll" id="reorder-items"></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="filterOrders('all', this)">All Orders</button>
+        <button class="tab" onclick="filterOrders('pending', this)">Pending</button>
+        <button class="tab" onclick="filterOrders('processing', this)">Processing</button>
+        <button class="tab" onclick="filterOrders('shipped', this)">Shipped</button>
+        <button class="tab" onclick="filterOrders('delivered', this)">Delivered</button>
+        <button class="tab" onclick="filterOrders('cancelled', this)">Cancelled</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Orders List -->
+  <section class="section" style="padding-top: 10px;">
+    <div class="container">
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="orders-empty">
+        <div class="empty-state-icon">&#128230;</div>
+        <h3 class="empty-state-title">No orders yet</h3>
+        <p class="empty-state-text">When you place your first order, it will appear here for easy tracking.</p>
+        <a href="index.html" class="btn btn-primary">Start Shopping &#8594;</a>
+      </div>
+
+      <!-- Orders -->
+      <div class="flex flex-col gap-md" id="orders-list">
+        <!-- Orders rendered here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Order Detail Modal -->
+  <div class="modal-backdrop" id="order-detail-backdrop" onclick="hideModal('order-detail')"></div>
+  <div class="modal" id="order-detail" style="max-width: 640px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="order-detail-title">Order Details</h3>
+      <button class="modal-close" onclick="hideModal('order-detail')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Timeline -->
+      <div class="order-timeline" id="order-timeline">
+        <div class="timeline-step completed">
+          <div class="timeline-dot">&#10003;</div>
+          <div class="timeline-label">Placed</div>
+        </div>
+        <div class="timeline-step completed">
+          <div class="timeline-dot">&#10003;</div>
+          <div class="timeline-label">Confirmed</div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot">&#9679;</div>
+          <div class="timeline-label">Processing</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">&#9679;</div>
+          <div class="timeline-label">Shipped</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">&#9679;</div>
+          <div class="timeline-label">Delivered</div>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Order Info -->
+      <div class="detail-info-grid">
+        <div class="detail-info-box">
+          <div class="detail-info-label">Delivery Address</div>
+          <div class="detail-info-value" id="detail-address">-</div>
+        </div>
+        <div class="detail-info-box">
+          <div class="detail-info-label">Payment Method</div>
+          <div class="detail-info-value" id="detail-payment">-</div>
+        </div>
+        <div class="detail-info-box">
+          <div class="detail-info-label">Order Date</div>
+          <div class="detail-info-value" id="detail-date">-</div>
+        </div>
+        <div class="detail-info-box">
+          <div class="detail-info-label">Status</div>
+          <div class="detail-info-value" id="detail-status">-</div>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Items -->
+      <h4 class="body-sm" style="margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;">Order Items</h4>
+      <div class="flex flex-col gap-sm" id="order-detail-items"></div>
+
+      <div class="form-divider"></div>
+
+      <!-- Summary -->
+      <div class="flex justify-between body-sm" style="margin-bottom: 8px;">
+        <span class="text-muted">Subtotal</span>
+        <span class="font-mono" id="detail-subtotal">Rs 0.00</span>
+      </div>
+      <div class="flex justify-between body-sm" style="margin-bottom: 8px;">
+        <span class="text-muted">Delivery</span>
+        <span class="font-mono" id="detail-delivery">Rs 0.00</span>
+      </div>
+      <div class="flex justify-between body-sm" style="margin-bottom: 16px;">
+        <span class="text-muted">Tax</span>
+        <span class="font-mono" id="detail-tax">Rs 0.00</span>
+      </div>
+      <div class="flex justify-between" style="font-weight: 700; font-size: 1.1rem; padding-top: 12px; border-top: 2px solid var(--clr-border);">
+        <span>Total</span>
+        <span class="text-primary" id="detail-total">Rs 0.00</span>
+      </div>
+
+      <div style="margin-top: 16px; display: flex; gap: 10px;">
+        <button class="btn btn-outline" style="flex: 1;" onclick="hideModal('order-detail'); showOrderSlip(window._detailOrderId);">&#129534; View Payment Slip</button>
+        <button class="btn btn-primary" style="flex: 1;" id="detail-reorder-btn" onclick="reorderFromDetail()">&#128257; Reorder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none;">
+        <span>&copy; 2026 FreshMart. All rights reserved.</span>
+        <span>Made with &#128154; for fresh living</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Payment Slip & Receipt Modal -->
+  <div class="modal-backdrop" id="payment-slip-backdrop" onclick="hidePaymentSlipModal()"></div>
+  <div class="modal payment-slip-modal" id="payment-slip-modal" style="max-width: 660px; padding: 0; overflow: hidden; border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);">
+    
+    <!-- Slip Header Ribbon -->
+    <div style="background: linear-gradient(135deg, var(--clr-primary-dark) 0%, var(--clr-primary) 100%); color: #ffffff; padding: 20px 28px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="font-size: 2rem;">&#127807;</div>
+        <div>
+          <div style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; line-height: 1.1;">FreshMart Supermarket</div>
+          <div style="font-size: 0.75rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.06em;">Official Payment Receipt &amp; Tax Invoice</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="receipt-paid-badge" style="background: #22c55e; color: #ffffff; padding: 5px 12px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 4px;">
+          &#10003; PAID
+        </div>
+        <button class="modal-close" style="color: #ffffff; font-size: 1.5rem; background: none; border: none; cursor: pointer;" onclick="hidePaymentSlipModal()">&times;</button>
+      </div>
+    </div>
+
+    <!-- Printable Slip Content -->
+    <div id="printable-slip-area" style="background: #ffffff; padding: 28px 32px; color: #1f2937;">
+      
+      <!-- Top Order ID Banner -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px dashed #e5e7eb; padding-bottom: 18px; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; display: block; font-weight: 600;">Order ID</span>
+          <span class="font-mono" style="font-size: 1.5rem; font-weight: 800; color: var(--clr-primary);" id="slip-order-id">#ORD-00001</span>
+          <div style="font-size: 0.78rem; color: #6b7280; margin-top: 2px;">Payment Ref: <strong class="font-mono" id="slip-payment-id">PAY-00001</strong></div>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; display: block; font-weight: 600;">Date &amp; Time</span>
+          <div style="font-size: 0.88rem; font-weight: 600; color: #1f2937;" id="slip-date-time">17 Sep 2026, 03:45 PM</div>
+          <div style="font-size: 0.78rem; color: #6b7280; margin-top: 2px;">Method: <strong id="slip-payment-method">Credit Card</strong></div>
+        </div>
+      </div>
+
+      <!-- Customer & Delivery Information -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 4px;">Delivered To</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #111827;" id="slip-customer-name">Customer Name</div>
+          <div style="font-size: 0.8rem; color: #4b5563; margin-top: 2px;">&#128222; <span id="slip-customer-phone">+94 77 123 4567</span></div>
+        </div>
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 4px;">Shipping Address &amp; Speed</div>
+          <div style="font-size: 0.82rem; color: #111827; font-weight: 500;" id="slip-customer-address">42 Galle Road, Colombo</div>
+          <div style="font-size: 0.78rem; color: var(--clr-primary); font-weight: 600; margin-top: 3px;">&#128666; <span id="slip-delivery-slot">Standard Delivery</span></div>
+        </div>
+      </div>
+
+      <!-- Purchased Items Table -->
+      <div style="margin-bottom: 20px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+          <thead>
+            <tr style="border-bottom: 1.5px solid #e5e7eb; color: #6b7280; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+              <th style="padding: 8px 4px;">Item Description</th>
+              <th style="padding: 8px 4px; text-align: center;">Qty</th>
+              <th style="padding: 8px 4px; text-align: right;">Unit Price</th>
+              <th style="padding: 8px 4px; text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody id="slip-items-tbody">
+            <!-- Items injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Financial Calculation Section -->
+      <div style="border-top: 2px dashed #e5e7eb; padding-top: 14px; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: flex-end;">
+          <div style="width: 260px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; margin-bottom: 4px;">
+              <span>Subtotal:</span>
+              <span class="font-mono" id="slip-subtotal">Rs 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; margin-bottom: 4px;">
+              <span>Delivery Charge:</span>
+              <span class="font-mono" id="slip-delivery-fee">Rs 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; margin-bottom: 8px;">
+              <span>Tax (8%):</span>
+              <span class="font-mono" id="slip-tax">Rs 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; color: #111827; border-top: 1.5px solid #111827; padding-top: 8px;">
+              <span>Total Paid:</span>
+              <span class="font-mono" style="color: var(--clr-primary);" id="slip-grand-total">Rs 0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barcode Graphic & Verification Note -->
+      <div style="text-align: center; border-top: 1px solid #f3f4f6; padding-top: 14px;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.5rem; letter-spacing: 5px; font-weight: 900; color: #374151; margin-bottom: 2px;" id="slip-barcode">
+          ||||| ||| |||| ||||| || |||||| |||||
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 700; color: #6b7280; font-family: var(--font-mono); margin-bottom: 4px;" id="slip-barcode-text">ORD-00001</div>
+        <p style="font-size: 0.72rem; color: #9ca3af; margin: 0;">
+          Thank you for ordering with FreshMart! Please retain this slip for delivery verification. &bull; Hotline: +94 11 234 5678
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Action Toolbar (Hidden during print) -->
+    <div class="no-print" style="background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="printPaymentSlip()">
+          &#128438; Print Slip
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="downloadPaymentSlip()">
+          &#128229; Download Receipt
+        </button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="hidePaymentSlipModal()">
+        Close
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal-backdrop" id="login-modal-backdrop" onclick="hideModal('login-modal')"></div>
+  <div class="modal" id="login-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Welcome Back</h3>
+      <button class="modal-close" onclick="hideModal('login-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="login-form" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+      </form>
+      <div style="margin-top: 16px; padding: 12px; background: var(--clr-primary-muted); border-radius: var(--radius-sm); text-align: center;">
+        <p class="body-xs" style="color: var(--clr-primary); font-weight: 500;">Admin? Login with <strong>admin@freshmart.com</strong> / <strong>admin123</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal-backdrop" id="signup-modal-backdrop" onclick="hideModal('signup-modal')"></div>
+  <div class="modal" id="signup-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Account</h3>
+      <button class="modal-close" onclick="hideModal('signup-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="signup-form" onsubmit="handleSignup(event); return false;">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="signup-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="signup-phone" placeholder="+94 7X XXX XXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea class="form-textarea" id="signup-address" rows="2" placeholder="Your delivery address (e.g. 42 Galle Road, Colombo 03)"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/validator.js?v=2026_v2"></script>
+  <script src="js/api.js?v=2026_v2"></script>
+  <script src="js/product-browse.js?v=2026_v2"></script>
+  <script src="js/account.js?v=2026_v2"></script>
+  <script src="js/cart.js?v=2026_v2"></script>
+  <script src="js/order.js?v=2026_v2"></script>
+  <script src="js/payment-delivery.js?v=2026_v2"></script>
+</body>
+</html>

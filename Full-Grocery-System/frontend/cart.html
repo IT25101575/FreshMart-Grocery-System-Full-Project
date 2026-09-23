@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart — FreshMart</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-cart">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="navbar-logo">&#127807;</div>
+        <div class="navbar-brand-text">Fresh<span>Cart</span></div>
+      </a>
+      <div class="navbar-nav">
+        <a href="index.html" class="nav-link">&#127968; Browse</a>
+        <a href="cart.html" class="nav-link active" id="nav-cart">
+          &#128722; Cart
+          <span class="badge hidden" id="cart-badge">0</span>
+        </a>
+        <a href="orders.html" class="nav-link">&#128230; Orders</a>
+        <a href="admin.html" class="nav-link" id="nav-admin">&#9881; Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-sm" id="btn-login" onclick="showModal('login-modal')">Sign In</button>
+        <button class="btn btn-primary btn-sm" id="btn-signup" onclick="showModal('signup-modal')">Sign Up</button>
+        <div class="hidden" id="user-menu">
+          <button class="btn btn-ghost btn-sm" id="user-name-display"></button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+        </div>
+        <button class="navbar-mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-hero-banner" style="background-image: url('images/banner-grocery.jpg');">
+    <div class="page-hero-overlay"></div>
+    <div class="container page-hero-content">
+      <div class="flex items-center gap-md" style="position: relative; z-index: 1;">
+        <a href="index.html" class="btn btn-ghost btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.3);">&#8592; Continue Shopping</a>
+      </div>
+      <h1 class="heading-lg" style="margin-top: 16px; color: #fff; position: relative; z-index: 1;">Your Cart</h1>
+      <p class="body-sm" style="margin-top: 4px; color: rgba(255,255,255,0.8); position: relative; z-index: 1;" id="cart-count-text">0 items in your cart</p>
+    </div>
+  </section>
+
+  <!-- Cart Content -->
+  <section class="section" style="padding-top: 20px;">
+    <div class="container">
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="cart-empty">
+        <div class="empty-state-icon">&#128722;</div>
+        <h3 class="empty-state-title">Your cart is empty</h3>
+        <p class="empty-state-text">Looks like you haven't added any items yet. Browse our fresh collection to get started!</p>
+        <a href="index.html" class="btn btn-primary">Browse Products &#8594;</a>
+      </div>
+
+      <!-- Cart With Items -->
+      <div class="cart-layout" id="cart-content">
+        <div>
+          <div class="flex flex-col gap-md" id="cart-items-list">
+            <!-- Cart items rendered here -->
+          </div>
+        </div>
+
+        <!-- Summary Sidebar -->
+        <div class="cart-summary">
+          <div class="cart-summary-card">
+            <h3 class="cart-summary-title">Order Summary</h3>
+            <div class="summary-row">
+              <span class="label">Subtotal</span>
+              <span class="value" id="summary-subtotal">Rs 0.00</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">Delivery Fee</span>
+              <span class="value" id="summary-delivery">Rs 4.99</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">Tax (8%)</span>
+              <span class="value" id="summary-tax">Rs 0.00</span>
+            </div>
+            <div class="summary-total">
+              <span>Total</span>
+              <span class="value" id="summary-total">Rs 0.00</span>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <a href="checkout.html" class="btn btn-primary btn-lg" style="width: 100%;" id="checkout-btn">
+                Proceed to Checkout &#8594;
+              </a>
+            </div>
+
+            <div style="margin-top: 16px; text-align: center;">
+              <button class="btn btn-ghost btn-sm" onclick="clearCart()" style="color: var(--clr-danger);">Clear Cart</button>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--clr-border-light);">
+              <div class="flex items-center gap-xs body-xs" style="margin-bottom: 8px;">
+                <span>&#128274;</span> <span>Secure Checkout</span>
+              </div>
+              <div class="flex items-center gap-xs body-xs" style="margin-bottom: 8px;">
+                <span>&#128666;</span> <span>Free delivery over Rs 50</span>
+              </div>
+              <div class="flex items-center gap-xs body-xs">
+                <span>&#128260;</span> <span>Easy returns within 24h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none;">
+        <span>&copy; 2026 FreshMart. All rights reserved.</span>
+        <span>Made with &#128154; for fresh living</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal-backdrop" id="login-modal-backdrop" onclick="hideModal('login-modal')"></div>
+  <div class="modal" id="login-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Welcome Back</h3>
+      <button class="modal-close" onclick="hideModal('login-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="login-form" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+      </form>
+      <div style="margin-top: 16px; padding: 12px; background: var(--clr-primary-muted); border-radius: var(--radius-sm); text-align: center;">
+        <p class="body-xs" style="color: var(--clr-primary); font-weight: 500;">Admin? Login with <strong>admin@freshmart.com</strong> / <strong>admin123</strong></p>
+      </div>
+      <div class="form-divider">or</div>
+      <p class="body-sm text-center">Don't have an account? <a href="#" class="text-primary" style="font-weight: 600;" onclick="hideModal('login-modal'); showModal('signup-modal');">Create one</a></p>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal-backdrop" id="signup-modal-backdrop" onclick="hideModal('signup-modal')"></div>
+  <div class="modal" id="signup-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Account</h3>
+      <button class="modal-close" onclick="hideModal('signup-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="signup-form" onsubmit="return handleSignup(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="signup-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="signup-phone" placeholder="+94 7X XXX XXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <textarea class="form-textarea" id="signup-address" rows="2" placeholder="Your delivery address (e.g. 42 Galle Road, Colombo 03)"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/validator.js?v=2026_v2"></script>
+  <script src="js/api.js?v=2026_v2"></script>
+  <script src="js/product-browse.js?v=2026_v2"></script>
+  <script src="js/account.js?v=2026_v2"></script>
+  <script src="js/cart.js?v=2026_v2"></script>
+  <script src="js/payment-delivery.js?v=2026_v2"></script>
+</body>
+</html>
