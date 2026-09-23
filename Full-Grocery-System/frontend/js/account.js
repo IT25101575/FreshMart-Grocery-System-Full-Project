@@ -155,8 +155,15 @@ const AccountManager = (() => {
 
   function isStaff() {
     const session = getSession();
-    if (!session) return false;
-    return session.role === 'ADMIN' || session.email === ADMIN_EMAIL || session.role.startsWith('DEPT_');
+    if (!session || !session.role) return false;
+    if (session.role === 'CUSTOMER') return false;
+    return session.role === 'ADMIN' || 
+           session.email === ADMIN_EMAIL || 
+           session.role.startsWith('DEPT_') || 
+           session.role === 'DELIVERY_STAFF' || 
+           session.role === 'DELIVERY_SUPERVISOR' || 
+           session.role === 'INVENTORY_OFFICER' || 
+           session.role === 'STORE_MANAGER';
   }
 
   function updateAuthUI() {
@@ -166,6 +173,7 @@ const AccountManager = (() => {
     const userMenu = document.getElementById('user-menu');
     const userName = document.getElementById('user-name-display');
     const navAdmin = document.getElementById('nav-admin');
+    const menuAdminBtn = document.getElementById('menu-admin-btn');
 
     if (session) {
       if (btnLogin) btnLogin.classList.add('hidden');
@@ -178,19 +186,38 @@ const AccountManager = (() => {
       }
       if (userName) userName.textContent = session.name;
 
+      const staff = isStaff();
       if (navAdmin) {
-        navAdmin.classList.remove('hidden');
+        if (staff) {
+          navAdmin.classList.remove('hidden');
+        } else {
+          navAdmin.classList.add('hidden');
+        }
+      }
+      if (menuAdminBtn) {
+        if (staff) {
+          menuAdminBtn.classList.remove('hidden');
+        } else {
+          menuAdminBtn.classList.add('hidden');
+        }
       }
     } else {
       if (btnLogin) btnLogin.classList.remove('hidden');
       if (btnSignup) btnSignup.classList.remove('hidden');
       if (userMenu) userMenu.classList.add('hidden');
-      if (navAdmin) navAdmin.classList.remove('hidden');
+      if (navAdmin) navAdmin.classList.add('hidden');
+      if (menuAdminBtn) menuAdminBtn.classList.add('hidden');
     }
   }
 
   function guardAdminPage() {
-    if (!isStaff()) {
+    const session = getSession();
+    if (session && session.role === 'CUSTOMER') {
+      alert('Access Denied: Customers cannot access the Admin Management Panel.');
+      window.location.href = 'index.html';
+      return false;
+    }
+    if (!session) {
       const defaultAdmin = {
         id: 1001,
         name: 'System Admin',
@@ -352,17 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
   AccountManager.initDefaultUsers();
   AccountManager.updateAuthUI();
 
-  if (document.getElementById('admin-products') || document.querySelector('.admin-layout')) {
-    if (!AccountManager.isStaff()) {
-      const defaultAdmin = {
-        id: 1001,
-        name: 'System Admin',
-        email: 'admin@freshmart.com',
-        role: 'ADMIN',
-        phone: '0709988776',
-        address: '01 Corporate Tower, Colombo 03'
-      };
-      AccountManager.setSession(defaultAdmin);
-    }
+  if (document.getElementById('admin-products') || document.querySelector('.admin-layout') || document.body.classList.contains('page-admin')) {
+    AccountManager.guardAdminPage();
   }
 });

@@ -23,13 +23,13 @@
         </a>
         <a href="orders.html" class="nav-link">&#128230; Orders</a>
         <a href="#customer-inquiry-section" class="nav-link">&#128172; Inquiries</a>
-        <a href="admin.html" class="nav-link" id="nav-admin">&#9881; Admin</a>
       </div>
       <div class="navbar-actions">
         <button class="btn btn-ghost btn-sm" id="btn-login" onclick="showModal('login-modal')">Sign In</button>
         <button class="btn btn-primary btn-sm" id="btn-signup" onclick="showModal('signup-modal')">Sign Up</button>
         <div class="hidden" id="user-menu">
           <button class="btn btn-ghost btn-sm" id="user-name-display"></button>
+          <a href="admin.html" class="btn btn-outline btn-sm hidden" id="menu-admin-btn">&#9881; Admin Panel</a>
           <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
         </div>
         <button class="navbar-mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
@@ -608,13 +608,13 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <script src="js/validator.js?v=2026_v2"></script>
-  <script src="js/api.js?v=2026_v2"></script>
-  <script src="js/product-browse.js?v=2026_v2"></script>
-  <script src="js/account.js?v=2026_v2"></script>
-  <script src="js/cart.js?v=2026_v2"></script>
-  <script src="js/review.js?v=2026_v2"></script>
-  <script src="js/inquiry.js?v=2026_v2"></script>
+  <script src="js/validator.js?v=2026_v5"></script>
+  <script src="js/api.js?v=2026_v5"></script>
+  <script src="js/product-browse.js?v=2026_v5"></script>
+  <script src="js/account.js?v=2026_v5"></script>
+  <script src="js/cart.js?v=2026_v5"></script>
+  <script src="js/review.js?v=2026_v5"></script>
+  <script src="js/inquiry.js?v=2026_v5"></script>
   <script>
     // Auto-prefill customer inquiry fields if user is signed in
     function autofillInquiryFields() {
