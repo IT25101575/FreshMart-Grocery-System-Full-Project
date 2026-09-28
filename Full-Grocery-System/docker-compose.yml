@@ -10,7 +10,41 @@ services:
     volumes:
       - freshmart_sql_data:/var/opt/mssql
     restart: unless-stopped
+    networks:
+      - freshmart-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: freshmart-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=database
+    depends_on:
+      - database
+    restart: unless-stopped
+    networks:
+      - freshmart-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: freshmart-frontend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - freshmart-net
 
 volumes:
   freshmart_sql_data:
     driver: local
+
+networks:
+  freshmart-net:
+    driver: bridge

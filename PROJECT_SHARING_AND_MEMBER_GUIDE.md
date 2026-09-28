@@ -34,21 +34,16 @@
 ```
 FreshMart-Grocery-System-Full-Project/
 │
-├── RUN_FRESHMART.bat               <-- [Root 1-Click System Launcher]
-├── STOP_FRESHMART.bat              <-- [Root 1-Click Server Stopper]
+├── START_DOCKER_SILENT.vbs         <-- [1-Click Silent Docker Start - Zero CMD Windows]
+├── STOP_DOCKER_SILENT.vbs          <-- [1-Click Silent Docker Stopper]
 ├── .gitignore                      <-- [Git Ignore Rulefile]
 ├── README.md                       <-- [GitHub Project Overview & Setup]
 ├── PROJECT_SHARING_AND_MEMBER_GUIDE.md
 ├── Group_Report_Use_Case_Specification.md
 ├── Group_Use_Case_Scenarios_Word_Ready.md
-├── grocery_system_guide.md
 │
 └── Full-Grocery-System/            <-- [Core Application Directory]
-    ├── start-all.bat               <-- Launches Backend + Frontend + Opens Browser
-    ├── start-backend.bat           <-- Compiles and starts Port 8080 Java Server
-    ├── start-frontend.bat          <-- Starts Port 8000 Web Server
-    ├── stop-all.bat                <-- Cleanly kills Port 8080 & 8000 processes
-    ├── docker-compose.yml          <-- MS SQL Server 2022 Docker Container
+    ├── docker-compose.yml          <-- Full-Stack Multi-Container Orchestration
     │
     ├── backend/
     │   ├── lib/
