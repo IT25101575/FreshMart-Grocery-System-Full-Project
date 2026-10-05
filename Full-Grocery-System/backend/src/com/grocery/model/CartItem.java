@@ -14,7 +14,7 @@ public class CartItem {
     public CartItem() {}
 
     public CartItem(int cartItemId, int cartId, int productId, String productName, double quantity, double unitPrice, String unit, String imageUrl, String addedAt) {
-        this.cartItemId = cartItemId;f
+        this.cartItemId = cartItemId;
         this.cartId = cartId;
         this.productId = productId;
         this.productName = productName;
